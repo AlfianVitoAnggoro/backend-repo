@@ -6,6 +6,8 @@ import {
   updateDoc,
   doc,
   getDoc,
+  setDoc,
+  deleteDoc,
 } from 'firebase/firestore/lite';
 
 const getUsers = async (): Promise<DocumentData[]> => {
@@ -17,6 +19,40 @@ const getUsers = async (): Promise<DocumentData[]> => {
   } catch (error) {
     console.error('Error connecting to Firestore:', error);
     throw error; // lemparkan kembali kesalahan untuk menangkapnya di tempat yang memanggil getUsers
+  }
+};
+
+const getUser = async (userId: string): Promise<DocumentData | null> => {
+  try {
+    const userDoc = doc(db, 'users', userId);
+    const userSnapshot = await getDoc(userDoc);
+    if (userSnapshot.exists()) {
+      return userSnapshot.data();
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Failed to get user:', error);
+    throw error;
+  }
+};
+
+const createUser = async (
+  data: Partial<DocumentData>,
+): Promise<DocumentData | null> => {
+  try {
+    const userDoc = doc(collection(db, 'users'));
+    await setDoc(userDoc, data);
+    const newUserSnap = await getDoc(userDoc);
+    if (newUserSnap.exists()) {
+      return newUserSnap.data();
+    } else {
+      console.error('Document does not exist');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error;
   }
 };
 
@@ -44,4 +80,15 @@ const updateUser = async (
   }
 };
 
-export { getUsers, updateUser };
+const deleteUser = async (userId: string) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    await deleteDoc(userRef);
+    return getUsers();
+  } catch (error: any) {
+    console.error('Error deleting user:', error.message);
+    throw error; // Lemparkan kembali kesalahan untuk menangkapnya di tempat yang memanggil updateUser
+  }
+};
+
+export { getUsers, getUser, updateUser, createUser, deleteUser };

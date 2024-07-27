@@ -1,12 +1,19 @@
 import { Router } from 'express';
-import { getUsersController, updateUserController } from '../controller/api';
-import { authMiddleware } from '../middleware/authMiddleware';
+import {
+  getUserController,
+  createUserController,
+  deleteUserController,
+  getUsersController,
+  updateUserController,
+} from '../controller/userController';
+// import { authMiddleware } from '../middleware/authMiddleware';
 
 const userRouter = Router();
 
-userRouter.get('/', authMiddleware, getUsersController);
-// Contoh endpoint untuk meng-handle permintaan update user berdasarkan ID
-userRouter.put('/:userId', authMiddleware, updateUserController);
-// userRouter.put('/:id', authMiddleware, apiController.updateUserData);
+userRouter.get('/', getUsersController);
+userRouter.get('/:userId', getUserController);
+userRouter.post('/', createUserController);
+userRouter.put('/:userId', updateUserController);
+userRouter.delete('/:userId', deleteUserController);
 
 export default userRouter;
