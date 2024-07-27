@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./dist/core/app.ts",
-    "build": "tsc && --output public",
+    "start": "node ./dist/core/app.js",
+    "build": "tsc",
     "dev": "nodemon -r dotenv/config ./src/core/app.ts"
   },
   "keywords": [],
